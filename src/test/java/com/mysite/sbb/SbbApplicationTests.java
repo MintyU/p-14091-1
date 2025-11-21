@@ -46,4 +46,19 @@ class SbbApplicationTests {
         assertThat(q.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
     }
 
+    @Test
+    void t4() {
+        Question q = this.questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.");
+        assertThat(q).isNotNull();
+        assertThat(q.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void t5() {
+        List<Question> qList = this.questionRepository.findBySubjectLike("%sbb%");
+        Question q = qList.get(0);
+        assertThat(q).isNotNull();
+        assertThat(q.getId()).isEqualTo(1);
+    }
+
 }
