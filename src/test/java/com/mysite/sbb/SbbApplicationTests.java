@@ -38,4 +38,11 @@ class SbbApplicationTests {
         assertThat(q2.getSubject()).isEqualTo("새로운 질문입니다.");
     }
 
+    @Test
+    void t3() {
+        Question q = this.questionRepository.findBySubject("sbb가 무엇인가요?");
+        assertThat(q).isNotNull();
+        assertThat(q.getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+    }
+
 }
