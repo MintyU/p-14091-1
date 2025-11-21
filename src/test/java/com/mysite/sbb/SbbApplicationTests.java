@@ -1,15 +1,41 @@
 package com.mysite.sbb;
 
+import com.mysite.sbb.domain.question.Question;
+import com.mysite.sbb.domain.question.QuestionRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest
 class SbbApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+	@Autowired
+    private QuestionRepository questionRepository;
+
+    @Test
+    void t1() {
+        List<Question> all = this.questionRepository.findAll();
+        assertThat(all.size()).isEqualTo(2);
+        assertThat(all.get(0).getSubject()).isEqualTo("sbb가 무엇인가요?");
+        assertThat(all.get(0).getContent()).isEqualTo("sbb에 대해서 알고 싶습니다.");
+    }
+
+    @Test
+    void t2() {
+        Question q = new Question();
+        q.setSubject("새로운 질문입니다.");
+        q.setContent("테스트가 잘 동작하나요?");
+        q.setCreateDate(java.time.LocalDateTime.now());
+        this.questionRepository.save(q);
+
+        Question q2 = this.questionRepository.findById(q.getId()).orElse(null);
+        assertThat(q2).isNotNull();
+        assertThat(q2.getSubject()).isEqualTo("새로운 질문입니다.");
+    }
 
 }
