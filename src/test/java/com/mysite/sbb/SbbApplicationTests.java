@@ -1,5 +1,7 @@
 package com.mysite.sbb;
 
+import com.mysite.sbb.domain.answer.Answer;
+import com.mysite.sbb.domain.answer.AnswerRepository;
 import com.mysite.sbb.domain.question.Question;
 import com.mysite.sbb.domain.question.QuestionRepository;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,9 @@ class SbbApplicationTests {
 
 	@Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Test
     void t1() {
@@ -72,6 +77,32 @@ class SbbApplicationTests {
         Question q = oq.get();
         this.questionRepository.delete(q);
         assertThat(this.questionRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    void t7() {
+        Optional<Question> oq = this.questionRepository.findById(2);
+        assertThat(oq.isPresent()).isTrue();
+        Question q = oq.get();
+
+        Answer a = new Answer();
+        a.setContent("네 자동으로 생성됩니다.");
+        a.setCreateDate(java.time.LocalDateTime.now());
+        a.setQuestion(q);
+        this.answerRepository.save(a);
+
+        Optional<Answer> oa = this.answerRepository.findById(1);
+        assertThat(oa.isPresent()).isTrue();
+        Answer a2 = oa.get();
+        assertThat(a2.getQuestion().getId()).isEqualTo(2);
+
+        Optional<Question> oq2 = this.questionRepository.findById(2);
+        assertThat(oq2.isPresent()).isTrue();
+        Question q2 = oq.get();
+
+        List<Answer> answerList = q2.getAnswerList();
+        assertThat(answerList.size()).isEqualTo(1);
+        assertThat(answerList.get(0).getContent()).isEqualTo("네 자동으로 생성됩니다.");
     }
 
 }
